@@ -1,4 +1,3 @@
-
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -16,10 +15,20 @@ import { Patient } from '../../patients/entities/patient.entity.js';
 import { Doctor } from '../../doctors/entities/doctor.entity.js';
 import { MedicalRecord } from '../../medical-records/entities/medical-record.entity.js';
 
+export enum AppointmentStatus {
+  MENUNGGU = 'menunggu',
+  DIKONFIRMASI = 'dikonfirmasi',
+  SELESAI = 'selesai',
+  DIBATALKAN = 'dibatalkan',
+}
+
 @Entity('appointments')
 export class Appointment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ type: 'uuid' })
+  patient_id: string;
 
   @ManyToOne(() => Patient, (patient) => patient.appointments, {
     nullable: false,
@@ -27,6 +36,9 @@ export class Appointment {
   })
   @JoinColumn({ name: 'patient_id' })
   patient: Relation<Patient>;
+
+  @Column({ type: 'uuid' })
+  doctor_id: string;
 
   @ManyToOne(() => Doctor, (doctor) => doctor.appointments, {
     nullable: false,
@@ -39,8 +51,9 @@ export class Appointment {
   appointment_date: Date;
 
   @Column({
+    type: 'varchar',
     length: 20,
-    default: 'menunggu',
+    default: AppointmentStatus.MENUNGGU,
   })
   status: string;
 
