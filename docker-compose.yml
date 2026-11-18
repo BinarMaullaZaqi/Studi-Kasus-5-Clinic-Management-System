@@ -1,0 +1,17 @@
+services:
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: clinic_postgres_container
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: clinic_management_db
+    ports:
+      # format: "port di komputer host : port di container docker"
+      - "5433:5432"
+    volumes:
+      - clinic_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  clinic_postgres_data:
