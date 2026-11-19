@@ -25,11 +25,14 @@ export class MedicalRecord {
   @JoinColumn({ name: 'appointment_id' })
   appointment: Relation<Appointment>;
 
-  @Column({ type: 'text' })
-  notes: string;
+ @Column({ type: 'text' })
+notes: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  visit_date: Date;
+@Column({ type: 'text', nullable: true })
+diagnosis: string;
+
+@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+visit_date: Date;
 
   @CreateDateColumn()
   created_at: Date;
