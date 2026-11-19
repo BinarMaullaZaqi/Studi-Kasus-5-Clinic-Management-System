@@ -31,6 +31,9 @@ export class DepartmentsService {
 
   findAll() {
     return this.departmentRepository.find({
+      relations: {
+        doctors: true,
+      },
       order: { created_at: 'DESC' },
     });
   }
@@ -38,6 +41,9 @@ export class DepartmentsService {
   async findOne(id: string) {
     const department = await this.departmentRepository.findOne({
       where: { id },
+      relations: {
+        doctors: true,
+      },
     });
 
     if (!department) {
@@ -65,10 +71,22 @@ export class DepartmentsService {
   }
 
   async remove(id: string) {
-    const department = await this.findOne(id);
+    const department = await this.departmentRepository.findOne({
+      where: { id },
+      relations: { doctors: true },
+    });
+
+    if (!department) {
+      throw new NotFoundException('Departemen tidak ditemukan');
+    }
+
+    if (department.doctors && department.doctors.length > 0) {
+      throw new ConflictException(
+        'Departemen tidak dapat dihapus karena masih memiliki dokter terdaftar',
+      );
+    }
 
     await this.departmentRepository.remove(department);
-
-    return { message: 'Departemen berhasil dihapus' };
+    return { message: 'Departemen berhasil dihapus', deletedId: id };
   }
 }

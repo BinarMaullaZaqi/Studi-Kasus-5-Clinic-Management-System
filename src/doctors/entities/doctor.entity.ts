@@ -1,4 +1,3 @@
-
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -29,12 +28,15 @@ export class Doctor {
   @Column({ length: 20, nullable: true })
   phone: string;
 
+  @Column({ type: 'uuid' })
+  department_id: string;
+
   @ManyToOne(() => Department, (department) => department.doctors, {
     nullable: false,
     onDelete: 'RESTRICT',
   })
   @JoinColumn({ name: 'department_id' })
-  department: Department;
+  department: Relation<Department>;
 
   @OneToMany(() => Appointment, (appointment) => appointment.doctor)
   appointments: Relation<Appointment[]>;
